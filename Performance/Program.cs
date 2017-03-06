@@ -4,7 +4,6 @@ using System.Diagnostics;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using Performance.EF6.Context;
 
 namespace Performance
 {
@@ -159,7 +158,7 @@ namespace Performance
         }
         private static void ResetAndWarmup()
         {
-            using (var db = new AdventureWorksContext())
+            using (var db = new EF6.Context.AdventureWorksContext())
             {
                 db.Database.ExecuteSqlCommand(@"DELETE FROM Production.ProductCategory WHERE Name LIKE 'Test %'");
                 db.Customers.FirstOrDefault();

@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using Concurrency.Context;
 using Concurrency.Models;
@@ -28,71 +29,23 @@ namespace Concurrency
                 catch (DbUpdateConcurrencyException ex)
                 {
                     Console.WriteLine(ex.Message);
-                    var entryEntity = ex.Entries[0];
-                    var databaseValues = entryEntity.GetDatabaseValues();
-                    Console.WriteLine("------------------------------------------");
-                    PrintProperties(entryEntity, databaseValues);
-                    Console.WriteLine("------------------------------------------");
-                    var modifiedEntries = entryEntity.Properties.Where(e => e.IsModified);
-                    Console.WriteLine("Modified Properties");
+                    EntityEntry entryEntity = ex.Entries[0];
+                    //Kept in DbChangeTracker
+                    PropertyValues originalValues = entryEntity.OriginalValues;
+                    PropertyValues currentValues = entryEntity.CurrentValues;
+                    IEnumerable<PropertyEntry> modifiedEntries = entryEntity.Properties.Where(e => e.IsModified);
                     foreach (var itm in modifiedEntries)
                     {
-                        Console.WriteLine($"{itm.Metadata.Name},");
+                        //Console.WriteLine($"{itm.Metadata.Name},");
                     }
-                    Console.WriteLine("------------------------------------------");
-                    Console.WriteLine("Reloaded Properties");
+                    //Needs to call to database to get values
+                    PropertyValues databaseValues = entryEntity.GetDatabaseValues();
+                    //Discards local changes, gets database values, resets change tracker
                     entryEntity.Reload();
-                    PrintProperties(entryEntity, null);
                 }
             }
-            //PrintTimeStamp(blog1,1);
             Console.WriteLine("Press any key to continue");
             Console.ReadKey();
-        }
-
-        private static void PrintProperties(
-            EntityEntry entryEntity, 
-            PropertyValues databaseValues)
-        {
-            Console.WriteLine($"Property Values:");
-            PrintFieldValues(entryEntity, databaseValues, nameof(Blog.Name));
-            PrintFieldValues(entryEntity, databaseValues, nameof(Blog.Url));
-
-        }
-        private static void PrintFieldValues(
-            EntityEntry entryEntity, 
-            PropertyValues reloadedValues,
-            string fieldName)
-        {
-            Console.WriteLine($"Field Name:{fieldName}");
-            Console.Write(reloadedValues != null 
-                ? "Current | Original | Database:" 
-                : "Current | Original:");
-            Console.Write($"{ entryEntity.CurrentValues[fieldName]}");
-            Console.Write($" | {entryEntity.OriginalValues[fieldName]}");
-            if (reloadedValues != null)
-            {
-                Console.WriteLine($" | {reloadedValues[fieldName]}");
-            }
-            else
-            {
-                Console.WriteLine("");
-            }
-        }
-        private static void PrintTimeStamp(Blog blog, int counter)
-        {
-            Console.Write($"Timestamp for item {counter}:");
-            for (int x = 0; x < blog.Timestamp.Length; x++)
-            {
-                if (x < blog.Timestamp.Length - 1)
-                {
-                    Console.Write(blog.Timestamp[x]);
-                }
-                else
-                {
-                    Console.WriteLine(blog.Timestamp[x]);
-                }
-            }
         }
 
         private static void SetupDatabase()
