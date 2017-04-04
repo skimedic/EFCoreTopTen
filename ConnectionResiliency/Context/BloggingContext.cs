@@ -27,7 +27,7 @@ namespace ConnectionResiliency.Context
                 //optionsBuilder.UseSqlServer(connectionString, options
                 //    => options.EnableRetryOnFailure());
                 optionsBuilder.UseSqlServer(connectionString,
-                    o => o.ExecutionStrategy(
+                    options => options.ExecutionStrategy(
                         c => new CustomExecutionStrategy(
                             c, 5, new TimeSpan(0, 0, 0, 0, 30))));
             }

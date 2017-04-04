@@ -8,6 +8,7 @@ namespace FromSQL.Context
     public class BloggingContext : DbContext
     {
         public DbSet<Blog> Blogs { get; set; }
+
         [NotMapped]
         public DbSet<ShortBlog> ShortBlogs { get; set; }
         public BloggingContext()

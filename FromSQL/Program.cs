@@ -15,7 +15,8 @@ namespace FromSQL
             using (var db = new BloggingContext())
             {
                 Console.WriteLine("Get data from function:");
-                var blogs = db.Blogs.FromSql("SELECT * FROM dbo.SearchBlogs(@p0)", "Snake")
+                var blogs = db.Blogs
+                    .FromSql("SELECT * FROM dbo.SearchBlogs(@p0)", "Snake")
                     .OrderBy(b => b.Url);
                 foreach (var itm in blogs)
                 {
@@ -23,7 +24,8 @@ namespace FromSQL
                 }
                 Console.WriteLine("-----------------------------");
                 Console.WriteLine("Get data for non table model");
-                IEnumerable<ShortBlog> shortBlogs = db.ShortBlogs.FromSql("SELECT * FROM dbo.Blogs")
+                IEnumerable<ShortBlog> shortBlogs = db.ShortBlogs
+                    .FromSql("SELECT * FROM dbo.Blogs")
                     .OrderBy(b => b.Url).ToList();
                 foreach (var itm in shortBlogs)
                 {

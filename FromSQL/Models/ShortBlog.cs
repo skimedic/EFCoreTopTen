@@ -1,4 +1,6 @@
-﻿namespace FromSQL.Models
+﻿using System.ComponentModel.DataAnnotations.Schema;
+
+namespace FromSQL.Models
 {
     public class ShortBlog
     {

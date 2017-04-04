@@ -14,6 +14,7 @@ namespace Find
             {
                 var b = db.Blogs.First();
                 var b2 = db.Find<Blog>(b.BlogId);
+                //var b2a = db.Blogs.Find(b.BlogId);
                 var b3 = db.Blogs.First(x => x.BlogId == b.BlogId);
             }
         }
